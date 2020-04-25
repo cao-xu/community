@@ -12,8 +12,6 @@
 
 ## 脚本
 ```sql
-create schema community collate gb2312_chinese_ci;
-
 create table user
 (
 	id int auto_increment
