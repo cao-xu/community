@@ -20,12 +20,14 @@ public class indexController {
         //获取cookie中的token
         //按token查询user，若存在则将user存入session，否则直接重定向回index.html
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie:cookies){
-            if (cookie.getName().equals("token")){
-                String token = cookie.getValue();
-                User user = userMapper.findByToken(token);
-                request.getSession().setAttribute("user",user);
-                break;
+        if (cookies != null && cookies.length != 0) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    String token = cookie.getValue();
+                    User user = userMapper.findByToken(token);
+                    request.getSession().setAttribute("user", user);
+                    break;
+                }
             }
         }
         return "index";

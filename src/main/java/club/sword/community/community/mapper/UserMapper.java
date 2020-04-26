@@ -15,7 +15,7 @@ public interface UserMapper {
     这使开发者只需要关注 sql 语句本身，
     而不需要花费精力去处理加载驱动、创建连接、创建 statement 等等这么繁琐的过程
      */
-    @Insert("insert into user (name,account_id,token,gmt_create,gmt_modified) values (#{name},#{accountId},#{token},#{gmtCreate},#{gmtModified})")
+    @Insert("insert into user (name,account_id,token,gmt_create,gmt_modified,avatar_url) values (#{name},#{accountId},#{token},#{gmtCreate},#{gmtModified},#{avatarUrl})")
     void insert(User user);
 
     @Select("select * from user where token = #{token}")

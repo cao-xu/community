@@ -52,7 +52,7 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accessToken);
-        if (githubUser != null){
+        if (githubUser != null && githubUser.getId() != null){
 
             //将获取的github用户信息保存到数据库：
             // controller——>service——>DAO
@@ -64,6 +64,7 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            user.setAvatarUrl(githubUser.getAvatar_url());//头像url
             //使用MyBatis实现插入用户信息
             userMapper.insert(user);//类似于UserDAO，不过更简洁、方便
             //登录成功，写cookie和session
