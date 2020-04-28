@@ -1,5 +1,6 @@
 package club.sword.community.community.service;
 
+import club.sword.community.community.dto.PaginationDTO;
 import club.sword.community.community.dto.QuestionDTO;
 import club.sword.community.community.mapper.QuestionMapper;
 import club.sword.community.community.mapper.UserMapper;
@@ -21,12 +22,15 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<QuestionDTO> list() {
+    public PaginationDTO list(Integer page, Integer size) {
 
+        //创建分页DTO（questionDTO + 页码等）
+        PaginationDTO paginationDTO = new PaginationDTO();
         //查询所有问题及用户信息放入DTOlist
         List<QuestionDTO> questionDTOList = new ArrayList<>();
-        //第一步，查询所有问题list
-        List<Question> questions = questionMapper.list();
+        Integer offset = size * (page - 1);
+        //第一步，查询指定页码的问题，返回一个列表
+        List<Question> questions = questionMapper.list(offset, size);
         //第二步，查询问题对应的用户
         for (Question question:questions){
             User user =userMapper.findById(question.getCreator());
@@ -38,6 +42,25 @@ public class QuestionService {
             questionDTOList.add(questionDTO);
         }
         //返回查询结果list
-        return questionDTOList;
+        //设置查询到的questionDTO
+        paginationDTO.setQuestion(questionDTOList);
+        Integer totalCount = questionMapper.count();
+        Integer totalPage;
+        if (totalCount % size == 0) {
+            totalPage = totalCount / size;
+        } else {
+            totalPage = totalCount / size + 1;
+        }
+
+        if (page < 1) {
+            page = 1;
+        }
+        if (page > totalPage) {
+            page = totalPage;
+        }
+        //设置paginationDTO页面控制相关参数
+        //参数：totalCount：总问题数，page：当前页码，size：页面显示数量
+        paginationDTO.setPagination(totalPage, page);
+        return paginationDTO;
     }
 }
