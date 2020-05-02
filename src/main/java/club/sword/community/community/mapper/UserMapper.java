@@ -1,11 +1,7 @@
 package club.sword.community.community.mapper;
 
 import club.sword.community.community.model.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -23,6 +19,11 @@ public interface UserMapper {
     User findByToken(@Param("token") String token);
 
     @Select("select * from user where id = #{id}")
-    User findById(@Param("id") Integer id);
+    User findById(@Param("id") Long id);
 
+    @Select("select * from user where account_id = #{accountId}")
+    User findByAccountId(@Param("accountId") String accountId);
+
+    @Update("update user set name = #{name}, gmt_modified = #{gmtModified},token = #{token}, avatar_url = #{avatarUrl} where account_id = #{accountId}")
+    void updateByAccountId(User dbUser);
 }

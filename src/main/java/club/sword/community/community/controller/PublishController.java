@@ -1,7 +1,6 @@
 package club.sword.community.community.controller;
 
 import club.sword.community.community.mapper.QuestionMapper;
-import club.sword.community.community.mapper.UserMapper;
 import club.sword.community.community.model.Question;
 import club.sword.community.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -19,9 +17,6 @@ public class PublishController {
 
     @Autowired
     private QuestionMapper questionMapper;
-
-    @Autowired
-    private UserMapper userMapper;
 
     //直接访问发布页面，不带参数
     @GetMapping("/publish")
@@ -54,19 +49,7 @@ public class PublishController {
             return "publish";
         }
 
-        User user = null;
-        //查询用户是否已经登录
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length != 0){
-            for (Cookie cookie:cookies){
-                if (cookie.getName().equals("token")){
-                    String token = cookie.getValue();
-                    user = userMapper.findByToken(token);
-                    request.getSession().setAttribute("user",user);
-                    break;
-                }
-            }
-        }
+        User user = (User) request.getSession().getAttribute("user");
 
         if(user == null){
             model.addAttribute("error", "用户未登录");

@@ -5,6 +5,7 @@ import club.sword.community.community.dto.GithubUser;
 import club.sword.community.community.mapper.UserMapper;
 import club.sword.community.community.model.User;
 import club.sword.community.community.provider.GithubProvider;
+import club.sword.community.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -37,7 +38,7 @@ public class AuthorizeController {
     private String redirectUri;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name="code") String code,
@@ -62,11 +63,9 @@ public class AuthorizeController {
             user.setToken(token);
             user.setName(githubUser.getName());
             user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatar_url());//头像url
             //使用MyBatis实现插入用户信息
-            userMapper.insert(user);//类似于UserDAO，不过更简洁、方便
+            userService.createOrUpdate(user);
             //登录成功，写cookie和session
             //在cookie中设置一个token
             Cookie cookie = new Cookie("token", token);
@@ -78,6 +77,18 @@ public class AuthorizeController {
             return "redirect:/";
         }
 
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
+        //第一步，删除session中的user对象
+        request.getSession().removeAttribute("user");
+        //第二步，删除cookie中的token对象
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);//立即删除
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 
 }
