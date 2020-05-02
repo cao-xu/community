@@ -26,4 +26,7 @@ public interface UserMapper {
 
     @Update("update user set name = #{name}, gmt_modified = #{gmtModified},token = #{token}, avatar_url = #{avatarUrl} where account_id = #{accountId}")
     void updateByAccountId(User dbUser);
+
+    @Select("select * from user where id = #{id}")
+    User selectByPrimaryKey(@Param("id") Long creator);
 }

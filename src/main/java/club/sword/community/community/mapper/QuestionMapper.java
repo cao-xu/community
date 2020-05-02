@@ -1,10 +1,7 @@
 package club.sword.community.community.mapper;
 
 import club.sword.community.community.model.Question;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -29,4 +26,16 @@ public interface QuestionMapper {
 
     @Select("select * from question where id = #{id}")
     Question findById(@Param("id") Long id);
+
+    @Select("select * from question where id = #{id}")
+    Question selectByPrimaryKey(@Param("id") Long id);
+
+    @Insert("insert into question (title,description,gmt_create,gmt_modified,creator,tag) " +
+            "values (#{title},#{description},#{gmtCreate},#{gmtModified},#{creator},#{tag})")
+    void insert(Question question);
+
+    @Update("update question " +
+            "set title = #{title}, description = #{description}, gmt_modified = #{gmtModified}, tag = #{tag} " +
+            "where id = #{id}")
+    void updateById(Question question);
 }

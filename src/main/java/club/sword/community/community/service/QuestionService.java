@@ -117,4 +117,34 @@ public class QuestionService {
         questionDTO.setUser(user);
         return questionDTO;
     }
+
+    public QuestionDTO getById(Long id) {
+        Question question = questionMapper.selectByPrimaryKey(id);
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question, questionDTO);
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
+        questionDTO.setUser(user);
+        return questionDTO;
+    }
+
+    public void createOrUpdate(Question question) {
+        //若带有问题id，则更新内容
+        //若不带有问题id，则插入新问题
+        if (question.getId() == null){
+            //插入
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.insert(question);
+        }else {
+            //更新
+            //先查询是否存在
+            Question dbQuestion = questionMapper.selectByPrimaryKey(question.getId());
+            if (dbQuestion != null){
+                question.setGmtModified(System.currentTimeMillis());
+                //缺少对CURD操作是否成功的判断，应该判断是否执行成功，再进行下一步操作
+                questionMapper.updateById(question);
+            }
+
+        }
+    }
 }
