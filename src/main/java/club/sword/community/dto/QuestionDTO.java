@@ -1,6 +1,6 @@
-package club.sword.community.community.dto;
+package club.sword.community.dto;
 
-import club.sword.community.community.model.User;
+import club.sword.community.model.User;
 import lombok.Data;
 
 //一种数据传输层类，主要用于数据的拼接

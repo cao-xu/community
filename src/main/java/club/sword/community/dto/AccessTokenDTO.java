@@ -1,4 +1,4 @@
-package club.sword.community.community.dto;
+package club.sword.community.dto;
 
 import lombok.Data;
 

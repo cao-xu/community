@@ -1,11 +1,13 @@
-package club.sword.community.community.service;
+package club.sword.community.service;
 
-import club.sword.community.community.dto.PaginationDTO;
-import club.sword.community.community.dto.QuestionDTO;
-import club.sword.community.community.mapper.QuestionMapper;
-import club.sword.community.community.mapper.UserMapper;
-import club.sword.community.community.model.Question;
-import club.sword.community.community.model.User;
+import club.sword.community.dto.PaginationDTO;
+import club.sword.community.dto.QuestionDTO;
+import club.sword.community.mapper.QuestionMapper;
+import club.sword.community.mapper.UserMapper;
+import club.sword.community.model.Question;
+import club.sword.community.model.QuestionExample;
+import club.sword.community.model.User;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,10 +32,10 @@ public class QuestionService {
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         Integer offset = size * (page - 1);
         //第一步，查询指定页码的问题，返回一个列表
-        List<Question> questions = questionMapper.list(offset, size);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
         //第二步，查询问题对应的用户
         for (Question question:questions){
-            User user =userMapper.findById(question.getCreator());
+            User user =userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             //插入user
             questionDTO.setUser(user);
@@ -44,7 +46,7 @@ public class QuestionService {
         //返回查询结果list
         //设置查询到的questionDTO
         paginationDTO.setQuestion(questionDTOList);
-        Integer totalCount = questionMapper.count();
+        Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
         Integer totalPage;
         if (totalCount % size == 0) {
             totalPage = totalCount / size;
@@ -69,7 +71,10 @@ public class QuestionService {
         //总页数
         Integer totalPage;
 
-        Integer totalCount = questionMapper.countByUserId(userId);
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andCreatorEqualTo(userId);
+        Integer totalCount = (int) questionMapper.countByExample(example);
 
         if (totalCount % size == 0) {
             totalPage = totalCount / size;
@@ -88,10 +93,14 @@ public class QuestionService {
 
         Integer offset = size * (page - 1);
         //按照userId查询questionList
-        List<Question> questions = questionMapper.listByUserId(userId, offset, size);
+        //设置查询语句为：用户id
+        QuestionExample example1 = new QuestionExample();
+        example1.createCriteria()
+                .andCreatorEqualTo(userId);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example1, new RowBounds(offset, size));
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
@@ -110,10 +119,10 @@ public class QuestionService {
         //返回DTO
         //第一步
         QuestionDTO questionDTO = new QuestionDTO();
-        Question question = questionMapper.findById(id);
+        Question question = questionMapper.selectByPrimaryKey(id);
         BeanUtils.copyProperties(question, questionDTO);
         //第二步
-        User user = userMapper.findById(question.getCreator());
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDTO.setUser(user);
         return questionDTO;
     }
@@ -134,15 +143,21 @@ public class QuestionService {
             //插入
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
-            questionMapper.insert(question);
+            //不可以使用insert(),因为id是自动生成的，为空，所以用部分插入
+            questionMapper.insertSelective(question);
         }else {
             //更新
             //先查询是否存在
             Question dbQuestion = questionMapper.selectByPrimaryKey(question.getId());
             if (dbQuestion != null){
                 question.setGmtModified(System.currentTimeMillis());
-                //缺少对CURD操作是否成功的判断，应该判断是否执行成功，再进行下一步操作
-                questionMapper.updateById(question);
+                //2020.5.2
+                // 缺少对CURD操作是否成功的判断，应该判断是否执行成功，再进行下一步操作
+                QuestionExample example = new QuestionExample();
+                example.createCriteria()
+                        .andCreatorEqualTo(question.getCreator());
+                int i = questionMapper.updateByExampleSelective(question, example);
+
             }
 
         }

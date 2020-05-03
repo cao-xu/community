@@ -1,11 +1,10 @@
-package club.sword.community.community.controller;
+package club.sword.community.controller;
 
-import club.sword.community.community.dto.QuestionDTO;
-import club.sword.community.community.mapper.QuestionMapper;
-import club.sword.community.community.model.Question;
-import club.sword.community.community.model.User;
-import club.sword.community.community.service.QuestionService;
-import com.sun.org.apache.xpath.internal.operations.Mod;
+import club.sword.community.dto.QuestionDTO;
+import club.sword.community.mapper.QuestionMapper;
+import club.sword.community.model.Question;
+import club.sword.community.model.User;
+import club.sword.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

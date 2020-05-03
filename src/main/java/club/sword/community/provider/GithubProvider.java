@@ -1,12 +1,10 @@
-package club.sword.community.community.provider;
+package club.sword.community.provider;
 
-import club.sword.community.community.dto.AccessTokenDTO;
-import club.sword.community.community.dto.GithubUser;
+import club.sword.community.dto.AccessTokenDTO;
+import club.sword.community.dto.GithubUser;
 import com.alibaba.fastjson.JSON;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Component
 public class GithubProvider {

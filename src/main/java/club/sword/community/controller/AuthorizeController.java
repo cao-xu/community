@@ -1,11 +1,10 @@
-package club.sword.community.community.controller;
+package club.sword.community.controller;
 
-import club.sword.community.community.dto.AccessTokenDTO;
-import club.sword.community.community.dto.GithubUser;
-import club.sword.community.community.mapper.UserMapper;
-import club.sword.community.community.model.User;
-import club.sword.community.community.provider.GithubProvider;
-import club.sword.community.community.service.UserService;
+import club.sword.community.dto.AccessTokenDTO;
+import club.sword.community.dto.GithubUser;
+import club.sword.community.model.User;
+import club.sword.community.provider.GithubProvider;
+import club.sword.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

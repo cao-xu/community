@@ -1,8 +1,8 @@
-package club.sword.community.community.controller;
+package club.sword.community.controller;
 
-import club.sword.community.community.dto.PaginationDTO;
-import club.sword.community.community.model.User;
-import club.sword.community.community.service.QuestionService;
+import club.sword.community.dto.PaginationDTO;
+import club.sword.community.model.User;
+import club.sword.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

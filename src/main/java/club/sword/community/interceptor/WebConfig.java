@@ -1,4 +1,4 @@
-package club.sword.community.community.interceptor;
+package club.sword.community.interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
