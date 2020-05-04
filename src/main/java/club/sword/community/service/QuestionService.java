@@ -2,6 +2,8 @@ package club.sword.community.service;
 
 import club.sword.community.dto.PaginationDTO;
 import club.sword.community.dto.QuestionDTO;
+import club.sword.community.exception.CustomizeErrorCode;
+import club.sword.community.exception.CustomizeException;
 import club.sword.community.mapper.QuestionMapper;
 import club.sword.community.mapper.UserMapper;
 import club.sword.community.model.Question;
@@ -120,6 +122,9 @@ public class QuestionService {
         //第一步
         QuestionDTO questionDTO = new QuestionDTO();
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         BeanUtils.copyProperties(question, questionDTO);
         //第二步
         User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -129,6 +134,9 @@ public class QuestionService {
 
     public QuestionDTO getById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -156,8 +164,19 @@ public class QuestionService {
                 QuestionExample example = new QuestionExample();
                 example.createCriteria()
                         .andCreatorEqualTo(question.getCreator());
-                int i = questionMapper.updateByExampleSelective(question, example);
-
+                int updated = questionMapper.updateByExampleSelective(question, example);
+                if (updated != 1){
+                    //2020.5.4
+                    //修复判断CURD操作是否成功，抛出异常
+                    //未能更新成功，返回错误消息到error.html
+                    throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+                }
+            }
+            if (dbQuestion == null){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
+            if (dbQuestion.getCreator().longValue() != question.getCreator().longValue()){
+                throw new CustomizeException(CustomizeErrorCode.INVALID_OPERATION);
             }
 
         }
