@@ -4,6 +4,7 @@ import club.sword.community.dto.PaginationDTO;
 import club.sword.community.dto.QuestionDTO;
 import club.sword.community.exception.CustomizeErrorCode;
 import club.sword.community.exception.CustomizeException;
+import club.sword.community.mapper.QuestionExtMapper;
 import club.sword.community.mapper.QuestionMapper;
 import club.sword.community.mapper.UserMapper;
 import club.sword.community.model.Question;
@@ -25,6 +26,9 @@ public class QuestionService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     public PaginationDTO list(Integer page, Integer size) {
 
@@ -180,5 +184,14 @@ public class QuestionService {
             }
 
         }
+    }
+
+    public void incView(Long id) {
+        Question question = new Question();
+        question.setId(id);
+        //设置增加的阅读数为“1”
+        question.setViewCount(1);
+        //执行阅读数更新操作
+        questionExtMapper.incView(question);
     }
 }
