@@ -4,9 +4,7 @@ body {
 
 .main {
     background-color: white;
-    margin-right: 180px;
-    margin-left: 180px;
-    margin-top: 40px;
+    margin: 40px 180px;
 }
 
 .btn-publish {
@@ -37,5 +35,15 @@ body {
 .jumbotron {
     margin: 50px;
 }
+
+.comment {
+    margin: 10px 0;
+}
+
+.btn-comment {
+    float: right;
+    margin-bottom: 10px;
+}
+
 
 

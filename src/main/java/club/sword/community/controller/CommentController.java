@@ -3,7 +3,6 @@ package club.sword.community.controller;
 import club.sword.community.dto.CommentDTO;
 import club.sword.community.dto.ResultDTO;
 import club.sword.community.exception.CustomizeErrorCode;
-import club.sword.community.mapper.CommentMapper;
 import club.sword.community.model.Comment;
 import club.sword.community.model.User;
 import club.sword.community.service.CommentService;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class CommentController {
