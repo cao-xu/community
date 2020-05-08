@@ -26,7 +26,7 @@ function comment2target(targetId, type, content) {
             } else {
                 if (response.code == 2003) {
                     //未登录
-                    var isAccepted = confirm(response.message);
+                    var isAccepted = confirm(response.message);//弹出确认框
                     if (isAccepted) {
                         window.open("https://github.com/login/oauth/authorize?client_id=d06bcd194bb01844461f&redirect_uri=" + document.location.origin + "/callback&scope=user&state=2");
                         window.localStorage.setItem("closable", true);
