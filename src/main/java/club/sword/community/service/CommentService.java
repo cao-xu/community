@@ -81,7 +81,7 @@ public class CommentService {
         }
     }
 
-    //查询“评论”列表，按照问题id和评论类型
+    //查询“评论”列表，按照问题或评论的id和评论类型
     public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {
         CommentExample example = new CommentExample();
         example.createCriteria()

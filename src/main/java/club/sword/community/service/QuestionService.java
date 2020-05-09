@@ -161,6 +161,13 @@ public class QuestionService {
             //更新
             //先查询是否存在
             Question dbQuestion = questionMapper.selectByPrimaryKey(question.getId());
+            if (dbQuestion == null){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
+            if (dbQuestion.getCreator().longValue() != question.getCreator().longValue()){
+                throw new CustomizeException(CustomizeErrorCode.INVALID_OPERATION);
+            }
+
             if (dbQuestion != null){
                 //2020.5.2
                 // 缺少对CURD操作是否成功的判断，应该判断是否执行成功，再进行下一步操作
@@ -181,12 +188,6 @@ public class QuestionService {
                     //未能更新成功，返回错误消息到error.html
                     throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
                 }
-            }
-            if (dbQuestion == null){
-                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
-            }
-            if (dbQuestion.getCreator().longValue() != question.getCreator().longValue()){
-                throw new CustomizeException(CustomizeErrorCode.INVALID_OPERATION);
             }
 
         }
