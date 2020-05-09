@@ -162,13 +162,19 @@ public class QuestionService {
             //先查询是否存在
             Question dbQuestion = questionMapper.selectByPrimaryKey(question.getId());
             if (dbQuestion != null){
-                question.setGmtModified(System.currentTimeMillis());
                 //2020.5.2
                 // 缺少对CURD操作是否成功的判断，应该判断是否执行成功，再进行下一步操作
+                Question updateQuestion = new Question();
+                updateQuestion.setGmtModified(System.currentTimeMillis());
+                updateQuestion.setTitle(question.getTitle());
+                updateQuestion.setDescription(question.getDescription());
+                updateQuestion.setTag(question.getTag());
                 QuestionExample example = new QuestionExample();
                 example.createCriteria()
-                        .andCreatorEqualTo(question.getCreator());
-                int updated = questionMapper.updateByExampleSelective(question, example);
+                        .andIdEqualTo(question.getId());//更新id为目标id的问题
+                int updated = questionMapper.updateByExampleSelective(updateQuestion, example);
+                //2020.5.9，debug不能去更新question的id，因为id是自增的，
+                // 所以使用updateQuestion只更新一下属性(GmtModified,Title,Description,Tag)
                 if (updated != 1){
                     //2020.5.4
                     //修复判断CURD操作是否成功，抛出异常

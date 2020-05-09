@@ -50,7 +50,7 @@ public class PublishController {
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("tag") String tag,
-            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam("id") Long id,
             HttpServletRequest request,
             Model model){
         //model变量可以在前端页面直接访问他的变量，所以加入

@@ -102,11 +102,12 @@ public class CommentService {
         UserExample userExample = new UserExample();
         userExample.createCriteria()
                 .andIdIn(userIds);
-          //查询评论人信息
+          //查询评论人信息，这样减少了查询评论人的次数，降低复杂度
         List<User> users = userMapper.selectByExample(userExample);
         Map<Long, User> userMap = users.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
 
         // 转换 comment 为 commentDTO
+           //stream()用于处理数组/流对象，返回一个新的流对象，toList()转换为数组
         List<CommentDTO> commentDTOS = comments.stream().map(comment -> {
             CommentDTO commentDTO = new CommentDTO();
             BeanUtils.copyProperties(comment, commentDTO);
