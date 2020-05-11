@@ -10,13 +10,16 @@ import club.sword.community.mapper.UserMapper;
 import club.sword.community.model.Question;
 import club.sword.community.model.QuestionExample;
 import club.sword.community.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -30,6 +33,8 @@ public class QuestionService {
     @Autowired
     private QuestionExtMapper questionExtMapper;
 
+
+    //主页查询分页问题
     public PaginationDTO list(Integer page, Integer size) {
 
         //创建分页DTO（questionDTO + 页码等）
@@ -38,7 +43,9 @@ public class QuestionService {
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         Integer offset = size * (page - 1);
         //第一步，查询指定页码的问题，返回一个列表
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
+        QuestionExample example = new QuestionExample();
+        example.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
         //第二步，查询问题对应的用户
         for (Question question:questions){
             User user =userMapper.selectByPrimaryKey(question.getCreator());
@@ -72,6 +79,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
+    //查询指定用户id的分页问题列表
     public PaginationDTO list(Long userId, Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         //总页数
@@ -103,6 +111,7 @@ public class QuestionService {
         QuestionExample example1 = new QuestionExample();
         example1.createCriteria()
                 .andCreatorEqualTo(userId);
+        example1.setOrderByClause("gmt_create desc");
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(example1, new RowBounds(offset, size));
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
@@ -200,5 +209,30 @@ public class QuestionService {
         question.setViewCount(1);
         //执行阅读数更新操作
         questionExtMapper.incView(question);
+    }
+
+    public List<QuestionDTO> selectRelated(QuestionDTO queryDTO) {
+        if (StringUtils.isBlank(queryDTO.getTag())) {
+            return new ArrayList<>();
+        }
+        //分隔标签，用“|”连接
+        String[] tags = StringUtils.split(queryDTO.getTag(), ",");
+        String regexpTag = Arrays
+                .stream(tags)
+                .filter(StringUtils::isNotBlank)
+                .map(t -> t.replace("+", "").replace("*", "").replace("?", ""))
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setId(queryDTO.getId());
+        question.setTag(regexpTag);
+
+        List<Question> questions = questionExtMapper.selectRelated(question);
+        List<QuestionDTO> questionDTOS = questions.stream().map(q -> {
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO);
+            return questionDTO;
+        }).collect(Collectors.toList());
+        return questionDTOS;
     }
 }
