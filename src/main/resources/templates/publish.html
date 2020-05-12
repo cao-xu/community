@@ -36,10 +36,10 @@
                               rows="10"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="tags_input">添加标签:</label>
-                    <input type="text" class="form-control" th:value="${tag}" id="tags_input" name="tags"
-                           autocomplete="off" placeholder="输入标签，以，号分隔" onclick="showSelectTag()">
-
+                    <label for="tag">选择标签:</label>
+                    <input type="text" class="form-control" th:value="${tag}" id="tag" name="tag"
+                           autocomplete="off" placeholder="请选择标签" onclick="showSelectTag()"
+                           readonly="readonly" data-rule="标签:required;">
                     <div id="select-tag" class="publish-tag-tab">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" th:each="selectCategory,selectCategoryStat: ${tags}"
@@ -53,13 +53,17 @@
                             <div role="tabpanel" th:id="${selectCategory.categoryName}"
                                  th:each="selectCategory: ${tags}"
                                  th:class="${selectCategoryStat.first ? 'active tab-pane':'tab-pane'}">
-                                <span>
-                                    <span th:each="selectTag: ${selectCategory.tags}">
-                                    <span class="community-tag" onclick="selectTagInput(this)"
-                                          th:data-tag="${selectTag}"
-                                          th:text="${' '+selectTag}">
+                                <span th:each="selectTag: ${selectCategory.tags}">
+                                    <span th:id="'all'+${selectTag}" class="label label-primary tag-style select">
+                                        <span class="glyphicon glyphicon-tags" onclick="selectTag(this)"
+                                              th:data-tag="${selectTag}"></span>
+                                        <span class="tag-text" onclick="selectTag(this)"
+                                              th:data-tag="${selectTag}"
+                                              th:text="${' '+selectTag}"></span>
+                                        <span class="glyphicon glyphicon-remove publish-tag-remove"
+                                              th:id="'remove-'+${selectTag}"
+                                              onclick="deleteTag(this)" th:data-tag="${selectTag}"></span>
                                     </span>
-                                </span>
                                 </span>
                             </div>
                         </div>

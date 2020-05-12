@@ -118,14 +118,36 @@ function showSelectTag() {
     $("#select-tag").show();
 }
 
-function selectTagInput(e) {
+function selectTag(e) {
     var value = e.getAttribute("data-tag");
-    var previous = $("#tags_input").val();
+    var previous = $("#tag").val();
     if (previous.indexOf(value) == -1) {//当前选中的标签在文本框中不存在
+        $(document.getElementById('all' + value)).addClass("publish-tag-selected");
         if (previous) { //之前文本框不为空
-            $("#tags_input").val(previous + ',' + value); //设置尾加标签
+            $("#tag").val(previous + ',' + value); //设置尾加标签
         } else { //之前为空
-            $("#tags_input").val(value);//设置标签文本
+            $("#tag").val(value);//设置标签文本
         }
+    }
+}
+
+function deleteTag(e) {
+    const removeValue = e.getAttribute("data-tag");//获取待删除的值
+    const content = $("#tag").val();//获取输入框的值
+    //防止字串干扰
+    let arr = content.split(',');
+    count = arr.length;
+    if (arr.indexOf(removeValue) > -1) {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] === removeValue) {
+                arr.splice(i, 1);
+                $(document.getElementById('all' + removeValue)).removeClass("publish-tag-selected");
+                count--;
+                break;
+            }
+        }
+        $("#tag").val(arr.join(','));
+    } else {
+        alert('不要再点啦，我还没被选呢');
     }
 }

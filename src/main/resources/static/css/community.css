@@ -27,6 +27,46 @@ body {
     margin: 4px;
 }
 
+.tag-style {
+    text-decoration-line: none;
+    cursor: pointer;
+    display: inline-block;
+    height: 20px;
+    line-height: 16px;
+    padding: 2px 5px;
+    background-color: #99cfff;
+    font-size: 12px;
+    color: #fff !important;
+    border-radius: 4px;
+    margin: 4px;
+}
+
+.tag-style:hover {
+    background-color: #337AEE;
+}
+
+.tag-style a {
+    color: #fff;
+}
+
+.tag-style a:hover, .tag-style a:visited {
+    text-decoration: none;
+}
+
+.publish-tag-selected {
+    background-color: forestgreen;
+    cursor: unset;
+}
+
+.publish-tag-remove:hover {
+    color: #db2d20;
+    cursor: pointer;
+}
+
+.tag-text {
+    margin-left: 3px;
+}
+
 .btn-publish {
     float: right;
     margin-bottom: 15px;
@@ -73,6 +113,11 @@ body {
     white-space: normal;
     margin: 5px 5px;
     display: inline-block;
+}
+
+.publish-tag-remove:hover {
+    color: #db2d20;
+    cursor: pointer;
 }
 
 .community-menu {
