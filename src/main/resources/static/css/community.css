@@ -41,8 +41,9 @@ body {
     margin: 4px;
 }
 
-.tag-style:hover {
+.tag-style:hover {/*鼠标悬浮时*/
     background-color: #337AEE;
+    color: #fff !important;
 }
 
 .tag-style a {

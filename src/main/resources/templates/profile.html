@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="${sectionName}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
     <link rel="stylesheet" href="/css/community.css"/>
@@ -35,6 +35,10 @@
                             <span th:text="${question.commentCount}"></span> 个回复 •
                             <span th:text="${question.viewCount}"></span> 次浏览 •
                             <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>
+                            <a th:href="@{'/publish/'+${question.id}}" class="community-menu"
+                               th:if="${session.user != null && session.user.id == question.creator}">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
+                            </a>
                         </span>
                     </div>
                 </div>
