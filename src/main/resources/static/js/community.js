@@ -113,3 +113,19 @@ function collapseComments(e) {
         }
     }
 }
+
+function showSelectTag() {
+    $("#select-tag").show();
+}
+
+function selectTagInput(e) {
+    var value = e.getAttribute("data-tag");
+    var previous = $("#tags_input").val();
+    if (previous.indexOf(value) == -1) {//当前选中的标签在文本框中不存在
+        if (previous) { //之前文本框不为空
+            $("#tags_input").val(previous + ',' + value); //设置尾加标签
+        } else { //之前为空
+            $("#tags_input").val(value);//设置标签文本
+        }
+    }
+}
