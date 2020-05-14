@@ -7,9 +7,9 @@ import java.util.List;
 
 
 @Data
-public class PaginationDTO {
+public class PaginationDTO<T> {
     //问题列表
-    private List<QuestionDTO> question;
+    private List<T> data;//QuestionDTOList 或者 NotificationDTOList
     //分页控制参数
     private boolean showPrevious;
     private boolean showFirstPage;

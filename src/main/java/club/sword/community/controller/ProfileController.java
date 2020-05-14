@@ -2,6 +2,7 @@ package club.sword.community.controller;
 
 import club.sword.community.dto.PaginationDTO;
 import club.sword.community.model.User;
+import club.sword.community.service.NotificationService;
 import club.sword.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,9 @@ public class ProfileController {
 
     @Autowired
     private QuestionService questionService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/profile/{action}")
     public String profile(HttpServletRequest request,
@@ -37,9 +41,11 @@ public class ProfileController {
             PaginationDTO paginationDTO = questionService.list(user.getId(), page, size);
             model.addAttribute("pagination", paginationDTO);
         }else if (action.equals("replies")){
-            model.addAttribute("section","replies");
-            model.addAttribute("sectionName","最新回复");
-
+            //Service层按用户id、分页查询用户的通知列表
+            PaginationDTO paginationDTO = notificationService.list(user.getId(), page, size);
+            model.addAttribute("section", "replies");
+            model.addAttribute("pagination", paginationDTO);
+            model.addAttribute("sectionName", "最新回复");
         }
         return "profile";
     }

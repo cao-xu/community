@@ -58,7 +58,7 @@ public class QuestionService {
         }
         //返回查询结果list
         //设置查询到的questionDTO
-        paginationDTO.setQuestion(questionDTOList);
+        paginationDTO.setData(questionDTOList);
         Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
         Integer totalPage;
         if (totalCount % size == 0) {
@@ -122,7 +122,7 @@ public class QuestionService {
             questionDTOList.add(questionDTO);
         }
 
-        paginationDTO.setQuestion(questionDTOList);
+        paginationDTO.setData(questionDTOList);
         return paginationDTO;
 
     }

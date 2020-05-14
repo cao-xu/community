@@ -3,6 +3,8 @@ package club.sword.community.service;
 
 import club.sword.community.dto.CommentDTO;
 import club.sword.community.enums.CommentTypeEnum;
+import club.sword.community.enums.NotificationStatusEnum;
+import club.sword.community.enums.NotificationTypeEnum;
 import club.sword.community.exception.CustomizeErrorCode;
 import club.sword.community.exception.CustomizeException;
 import club.sword.community.mapper.*;
@@ -36,8 +38,11 @@ public class CommentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotificationMapper notificationMapper;
+
     @Transactional//事务标签，实现要么都执行，要么都不执行，“回滚”
-    public void insert(Comment comment) {
+    public void insert(Comment comment, User commentator) {
         //判断parentId是否为空
         if (comment.getParentId() == null || comment.getParentId() == 0){
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUND);
@@ -65,6 +70,10 @@ public class CommentService {
             parentComment.setId(comment.getParentId());
             parentComment.setCommentCount(1);
             commentExtMapper.incCommentCount(parentComment);
+
+            // 创建通知
+            createNotify(comment, dbComment.getCommentator(), commentator.getName(), question.getTitle(),
+                    NotificationTypeEnum.REPLY_COMMENT, question.getId());
         }else {
             // 回复的是“问题”
             //查询要回复的问题是否存在
@@ -78,7 +87,29 @@ public class CommentService {
             //给“问题”增加回复数
             question.setCommentCount(1);
             questionExtMapper.incCommentCount(question);
+
+            // 创建通知
+            createNotify(comment, question.getCreator(), commentator.getName(),
+                    question.getTitle(), NotificationTypeEnum.REPLY_QUESTION, question.getId());
         }
+    }
+
+    private void createNotify(Comment comment, Long receiver, String notifierName,
+                              String outerTitle, NotificationTypeEnum notificationType, Long outerId) {
+        //若自己给自己回复，不通知
+//        if (receiver == comment.getCommentator()) {
+//            return;
+//        }
+        Notification notification = new Notification();
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setType(notificationType.getType());
+        notification.setOuterid(outerId);//设置所回复问题、评论的id
+        notification.setNotifier(comment.getCommentator());//设置评论者id
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        notification.setReceiver(receiver);//设置接收者id
+        notification.setNotifierName(notifierName);
+        notification.setOuterTitle(outerTitle);
+        notificationMapper.insert(notification);
     }
 
     //查询“评论”列表，按照问题或评论的id和评论类型
