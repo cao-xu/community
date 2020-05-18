@@ -17,6 +17,7 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     FILE_UPLOAD_FAIL(2010, "图片上传失败"),
     INVALID_INPUT(2011, "非法输入"),
     INVALID_OPERATION(2012, "兄弟，是不是走错房间了？"),
+    UPLOAD_FILE_ERROR(2013,"上传图片失败！"),
     ;
 
     @Override

@@ -1,0 +1,7 @@
+# 阿里云图片上传需要的参数
+aliyun:
+  endpoint: http://oss-cn-shanghai.aliyuncs.com
+  accessKeyId: LTAI4FzEfMzSbc7VBLtpthbk
+  accessKeySecret: 5PBUDABemlkCKIhzjzJfTwSTQszGyV
+  bucketName: sword-community
+
