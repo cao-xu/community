@@ -51,26 +51,26 @@
                 <ul class="pagination">
                     <!-- /第一页、前一页-->
                     <li th:if="${pagination.showFirstPage}">
-                        <a th:href="@{/(page= 1)}" aria-label="Previous">
+                        <a th:href="@{/(page= 1,search=${search})}" aria-label="Previous">
                             <span aria-hidden="true">&lt;&lt;</span>
                         </a>
                     </li>
                     <li th:if="${pagination.showPrevious}">
-                        <a th:href="@{/(page=${pagination.page - 1})}" aria-label="Previous">
+                        <a th:href="@{/(page=${pagination.page - 1},search=${search})}" aria-label="Previous">
                             <span aria-hidden="true">&lt;</span>
                         </a>
                     </li>
                     <!-- /用each标签循环展示页码-->
                     <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page}? 'active' : ''">
-                        <a th:href="@{/(page=${page})}" th:text="${page}"></a></li>
+                        <a th:href="@{/(page=${page},search=${search})}" th:text="${page}"></a></li>
                     <!-- /下一页、最后一页-->
                     <li th:if="${pagination.showNext}">
-                        <a th:href="@{/(page=${pagination.page + 1})}" aria-label="Next">
+                        <a th:href="@{/(page=${pagination.page + 1},search=${search})}" aria-label="Next">
                             <span aria-hidden="true">&gt;</span>
                         </a>
                     </li>
                     <li th:if="${pagination.showEndPage}">
-                        <a th:href="@{/(page=${pagination.totalPage})}" aria-label="Next">
+                        <a th:href="@{/(page=${pagination.totalPage},search=${search})}" aria-label="Next">
                             <span aria-hidden="true">&gt;&gt;</span>
                         </a>
                     </li>

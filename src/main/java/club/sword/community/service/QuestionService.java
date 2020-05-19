@@ -2,6 +2,7 @@ package club.sword.community.service;
 
 import club.sword.community.dto.PaginationDTO;
 import club.sword.community.dto.QuestionDTO;
+import club.sword.community.dto.QuestionQueryDTO;
 import club.sword.community.exception.CustomizeErrorCode;
 import club.sword.community.exception.CustomizeException;
 import club.sword.community.mapper.QuestionExtMapper;
@@ -35,32 +36,27 @@ public class QuestionService {
 
 
     //主页查询分页问题
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list(String search, Integer page, Integer size) {
 
+        //“|”构建搜索匹配项
+        if (StringUtils.isNotBlank(search)) {
+            String[] tags = StringUtils.split(search, " ");
+            search = Arrays
+                    .stream(tags)
+                    .filter(StringUtils::isNotBlank)
+                    .map(t -> t.replace("+", "").replace("*", "").replace("?", ""))
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining("|"));
+        }
         //创建分页DTO（questionDTO + 页码等）
         PaginationDTO paginationDTO = new PaginationDTO();
-        //查询所有问题及用户信息放入DTOlist
-        List<QuestionDTO> questionDTOList = new ArrayList<>();
-        Integer offset = size * (page - 1);
-        //第一步，查询指定页码的问题，返回一个列表
-        QuestionExample example = new QuestionExample();
-        example.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
-        //第二步，查询问题对应的用户
-        for (Question question:questions){
-            User user =userMapper.selectByPrimaryKey(question.getCreator());
-            QuestionDTO questionDTO = new QuestionDTO();
-            //插入user
-            questionDTO.setUser(user);
-            //插入question,BeanUtils将原model中的元素插入目标model
-            BeanUtils.copyProperties(question, questionDTO);
-            questionDTOList.add(questionDTO);
-        }
-        //返回查询结果list
-        //设置查询到的questionDTO
-        paginationDTO.setData(questionDTOList);
-        Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
         Integer totalPage;
+
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+
+        Integer totalCount = questionExtMapper.countBySearch(questionQueryDTO);
+
         if (totalCount % size == 0) {
             totalPage = totalCount / size;
         } else {
@@ -76,6 +72,27 @@ public class QuestionService {
         //设置paginationDTO页面控制相关参数
         //参数：totalCount：总问题数，page：当前页码，size：页面显示数量
         paginationDTO.setPagination(totalPage, page);
+        Integer offset = page < 1 ? 0 : size * (page - 1);
+        //第一步，查询指定页码的问题，返回一个列表
+        questionQueryDTO.setSize(size);
+        questionQueryDTO.setPage(offset);
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
+
+        //查询所有问题及用户信息放入DTOlist
+        List<QuestionDTO> questionDTOList = new ArrayList<>();
+        //第二步，查询问题对应的用户
+        for (Question question:questions){
+            User user =userMapper.selectByPrimaryKey(question.getCreator());
+            QuestionDTO questionDTO = new QuestionDTO();
+            //插入user
+            questionDTO.setUser(user);
+            //插入question,BeanUtils将原model中的元素插入目标model
+            BeanUtils.copyProperties(question, questionDTO);
+            questionDTOList.add(questionDTO);
+        }
+        //返回查询结果list
+        //设置查询到的questionDTO
+        paginationDTO.setData(questionDTOList);
         return paginationDTO;
     }
 
