@@ -1,6 +1,6 @@
 package club.sword.community.exception;
 
-public class CustomizeException extends RuntimeException {//集成运行时的异常类
+public class CustomizeException extends RuntimeException {//extends继承运行时的异常类
     private String message;
     private Integer code;
 

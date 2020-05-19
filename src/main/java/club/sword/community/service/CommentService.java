@@ -97,9 +97,9 @@ public class CommentService {
     private void createNotify(Comment comment, Long receiver, String notifierName,
                               String outerTitle, NotificationTypeEnum notificationType, Long outerId) {
         //若自己给自己回复，不通知
-//        if (receiver == comment.getCommentator()) {
-//            return;
-//        }
+        if (receiver == comment.getCommentator()) {
+            return;
+        }
         Notification notification = new Notification();
         notification.setGmtCreate(System.currentTimeMillis());
         notification.setType(notificationType.getType());
