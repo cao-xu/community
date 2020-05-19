@@ -4,6 +4,7 @@ import club.sword.community.dto.FileDTO;
 import club.sword.community.exception.CustomizeErrorCode;
 import club.sword.community.exception.CustomizeException;
 import club.sword.community.provider.AliyunProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import java.util.Objects;
  * Created by XuCao on 2020/5/18
  */
 @Controller
+@Slf4j
 public class FileController {
 
     @Autowired
@@ -40,6 +42,7 @@ public class FileController {
             fileDTO.setSuccess(1);
             fileDTO.setMessage("上传成功");
         } catch (IOException e){
+            log.error("upload error", e);
             fileDTO.setSuccess(0);
             fileDTO.setMessage("上传失败");
             e.printStackTrace();
