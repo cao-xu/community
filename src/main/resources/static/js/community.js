@@ -119,13 +119,26 @@ function showSelectTag() {
 }
 
 function selectTag(e) {
+    //定义开关
+    var flag = true;
+    //页面输入的标签
     var value = e.getAttribute("data-tag");
+    //输入框中的标签
     var previous = $("#tag").val();
-    if (previous.indexOf(value) == -1) {//当前选中的标签在文本框中不存在
-        $(document.getElementById('all' + value)).addClass("publish-tag-selected");
-        if (previous) { //之前文本框不为空
-            $("#tag").val(previous + ',' + value); //设置尾加标签
-        } else { //之前为空
+    //将输入框中的标签按,分割得到标签数组
+    var psplits = previous.split(",");
+    //循环数组与输入的标签值进行比较
+    for(var i = 0 ; i < psplits.length ; i++){
+        if(psplits[i] == value){
+            flag = false;
+        }
+    }
+    //如果没有重复元素的话,再添加
+    if(flag){
+        $(document.getElementById('all' + value)).addClass("publish-tag-selected");//添加选中的样式标签
+        if(previous){ //之前文本框不为空
+            $("#tag").val(previous+','+value);//设置尾加标签
+        }else{ //之前为空
             $("#tag").val(value);//设置标签文本
         }
     }
