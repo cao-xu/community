@@ -36,7 +36,7 @@ public class QuestionService {
 
 
     //主页查询分页问题
-    public PaginationDTO list(String search, Integer page, Integer size) {
+    public PaginationDTO list(String search, String tag, Integer page, Integer size) {
 
         //“|”构建搜索匹配项
         if (StringUtils.isNotBlank(search)) {
@@ -54,7 +54,14 @@ public class QuestionService {
 
         QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
         questionQueryDTO.setSearch(search);
+        if (StringUtils.isNotBlank(tag)) {
+            tag = tag.replace("+", "")
+                    .replace("*", "")
+                    .replace("?", "");
+            questionQueryDTO.setTag(tag);
+        }
 
+        //计算指定参数问题数量
         Integer totalCount = questionExtMapper.countBySearch(questionQueryDTO);
 
         if (totalCount % size == 0) {
