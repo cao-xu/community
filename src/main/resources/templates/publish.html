@@ -68,7 +68,8 @@
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div role="tabpanel" th:id="${selectCategory.categoryName}"
+                            <div role="tabpanel" class="tab-pane fade"
+                                 th:id="${selectCategory.categoryName}"
                                  th:each="selectCategory: ${tags}"
                                  th:class="${selectCategoryStat.first ? 'active tab-pane':'tab-pane'}">
                                 <span th:each="selectTag: ${selectCategory.tags}">
